@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Surat Keputusan</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  font-family:sans-serif;
+}
+
+.surat{
+  background:#fff;
+  width:90%;
+  max-width:420px;
+  padding:30px;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+}
+
+.btn-area{
+  position:relative;
+  height:160px;
+  margin-top:30px;
+  overflow:hidden;
+}
+
+button{
+  padding:14px 32px;
+  border:none;
+  border-radius:999px;
+  font-size:16px;
+}
+
+.terima{
+  background:#2ecc71;
+  color:white;
+  position:absolute;
+  left:30px;
+  top:60px;
+}
+
+.nolak{
+  background:#e74c3c;
+  color:white;
+  position:absolute;
+  right:30px;
+  top:60px;
+  transition:transform .12s ease-out;
+}
+</style>
+</head>
+<body>
+
+<div class="surat">
+  <h2>Surat Pernyataan</h2>
+  <p>Apakah kamu bersedia menerima keputusan ini?</p>
+
+  <div class="btn-area" id="area">
+    <button class="terima" onclick="terima()">Terima</button>
+    <button class="nolak" id="nolak">Nolak</button>
+  </div>
+</div>
+
+<script>
+const nolak = document.getElementById("nolak");
+const area = document.getElementById("area");
+
+let x = nolak.offsetLeft;
+let y = nolak.offsetTop;
+
+function kabur(clientX, clientY){
+  const rect = area.getBoundingClientRect();
+  const mouseX = clientX - rect.left;
+  const mouseY = clientY - rect.top;
+
+  const btnRect = nolak.getBoundingClientRect();
+  const btnX = x + btnRect.width/2;
+  const btnY = y + btnRect.height/2;
+
+  let dx = btnX - mouseX;
+  let dy = btnY - mouseY;
+  let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+
+  const force = 35;
+  x += (dx/dist) * force;
+  y += (dy/dist) * force;
+
+  // batas area
+  x = Math.max(10, Math.min(x, rect.width - btnRect.width - 10));
+  y = Math.max(10, Math.min(y, rect.height - btnRect.height - 10));
+
+  nolak.style.transform = `translate(${x - nolak.offsetLeft}px, ${y - nolak.offsetTop}px)`;
+}
+
+/* DESKTOP */
+area.addEventListener("mousemove", e => kabur(e.clientX, e.clientY));
+
+/* MOBILE */
+nolak.addEventListener("touchstart", e => {
+  e.preventDefault(); // blok klik
+  const t = e.touches[0];
+  kabur(t.clientX, t.clientY);
+});
+
+function terima(){
+  alert("Keputusan diterima 💚");
+}
+</script>
+
+</body>
+</html>
